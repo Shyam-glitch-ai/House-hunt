@@ -1,24 +1,142 @@
-# Compiled class file
-*.class
+#import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-# Log file
-*.log
+class House {
+    private String id;
+    private String location;
+    private double price;
+    private int bedrooms;
 
-# BlueJ files
-*.ctxt
+    public House(String id, String location, double price, int bedrooms) {
+        this.id = id;
+        this.location = location;
+        this.price = price;
+        this.bedrooms = bedrooms;
+    }
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+    public String getId() {
+        return id;
+    }
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+    public String getLocation() {
+        return location;
+    }
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+    public double getPrice() {
+        return price;
+    }
+
+    public int getBedrooms() {
+        return bedrooms;
+    }
+
+    @Override
+    public String toString() {
+        return "House ID: " + id + ", Location: " + location + ", Price: $" + price + ", Bedrooms: " + bedrooms;
+    }
+}
+
+class HouseHunt {
+    private List<House> listings = new ArrayList<>();
+
+    public void addHouse(House house) {
+        listings.add(house);
+    }
+
+    public List<House> search(String location, double minPrice, double maxPrice) {
+        List<House> result = new ArrayList<>();
+        for (House h : listings) {
+            if (h.getLocation().equalsIgnoreCase(location)
+                    && h.getPrice() >= minPrice && h.getPrice() <= maxPrice) {
+                result.add(h);
+            }
+        }
+        return result;
+    }
+
+    public void displayAll() {
+        if (listings.isEmpty()) {
+            System.out.println("No house listings available.");
+        } else {
+            for (House house : listings) {
+                System.out.println(house);
+            }
+        }
+    }
+}
+
+public class HouseHuntApp {
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final HouseHunt houseHunt = new HouseHunt();
+
+    public static void main(String[] args) {
+        int choice;
+        do {
+            System.out.println("\n--- House Hunt Menu ---");
+            System.out.println("1. Add a House");
+            System.out.println("2. Search Houses");
+            System.out.println("3. Display All Houses");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            choice = Integer.parseInt(scanner.nextLine());
+
+            switch (choice) {
+                case 1:
+                    addHouse();
+                    break;
+                case 2:
+                    searchHouses();
+                    break;
+                case 3:
+                    houseHunt.displayAll();
+                    break;
+                case 4:
+                    System.out.println("Exiting... Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+
+        } while (choice != 4);
+    }
+
+    private static void addHouse() {
+        System.out.print("Enter House ID: ");
+        String id = scanner.nextLine();
+
+        System.out.print("Enter Location: ");
+        String location = scanner.nextLine();
+
+        System.out.print("Enter Price: ");
+        double price = Double.parseDouble(scanner.nextLine());
+
+        System.out.print("Enter Number of Bedrooms: ");
+        int bedrooms = Integer.parseInt(scanner.nextLine());
+
+        houseHunt.addHouse(new House(id, location, price, bedrooms));
+        System.out.println("House added successfully!");
+    }
+
+    private static void searchHouses() {
+        System.out.print("Enter Location to search: ");
+        String location = scanner.nextLine();
+
+        System.out.print("Enter Minimum Price: ");
+        double minPrice = Double.parseDouble(scanner.nextLine());
+
+        System.out.print("Enter Maximum Price: ");
+        double maxPrice = Double.parseDouble(scanner.nextLine());
+
+        List<House> results = houseHunt.search(location, minPrice, maxPrice);
+
+        if (results.isEmpty()) {
+            System.out.println("No houses found matching your criteria.");
+        } else {
+            System.out.println("Matching Houses:");
+            for (House h : results) {
+                System.out.println(h);
+            }
+        }
+    }
+}
